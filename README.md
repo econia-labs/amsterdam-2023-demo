@@ -75,8 +75,7 @@
 1. Store `user1`'s address in a shell variable, and **make sure to use a leading `0x`** (you'll probably have to type `0x` manually before you copy-paste the output from the `aptos init` call):
 
    ```bash
-   # Make sure to insert a leading `0x` (your address should vary)
-   user1=0x445953fa27471d07027d2d8f0a87fc18e8f9d05bb9a7d673a2269ec2616267aa
+   user1=0x<copy-paste-your-address-here>
    ```
 
 1. Repeat for `user2`, `econia`, and `faucet` profiles:
