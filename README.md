@@ -15,6 +15,8 @@
 ## Resources
 
 - This walkthrough [is on GitHub](https://github.com/econia-labs/amsterdam-2023-demo) at https://github.com/econia-labs/amsterdam-2023-demo!
+  - Pro tip:
+    Search "github econia amsterdam" in your favorite search engine
 
 ### More documentation
 
