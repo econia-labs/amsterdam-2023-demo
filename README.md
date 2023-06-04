@@ -11,6 +11,7 @@
   - [Faucet setup](#faucet-setup)
   - [Market account registration](#market-account-registration)
   - [Trading](#trading)
+  - [Cleanup](#cleanup)
 
 ## Resources
 
@@ -402,3 +403,11 @@
 
    classDef new fill:green
    ```
+
+## Cleanup
+
+You'll probably want to clear out the Move dependencies to free up space on your machine:
+
+```bash
+rm -rf ~/.move
+```
