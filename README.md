@@ -131,7 +131,7 @@
 1. Navigate to a directory where you would like to download the Econia repo to:
 
    ```bash
-   cd my/desired/path
+   cd ~/Desktop
    ```
 
 1. Clone the Econia repo and navigate to the Econia Move package:
