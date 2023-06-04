@@ -101,6 +101,8 @@
    echo $faucet
    ```
 
+   The output should look like:
+
    ```bash
    0x445953fa27471d07027d2d8f0a87fc18e8f9d05bb9a7d673a2269ec2616267aa
    0xd572f6c2c9e7df6be78bdfff15bc72d56339b6226f3857d60eef1b9f99a2275f
