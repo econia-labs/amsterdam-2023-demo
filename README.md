@@ -14,7 +14,7 @@
 
 ## Resources
 
-- This walkthrough [is on GitHub](https://github.com/econia-labs/amsterdam-2023-demo)!
+- This walkthrough [is on GitHub](https://github.com/econia-labs/amsterdam-2023-demo) at https://github.com/econia-labs/amsterdam-2023-demo!
 
 ### More documentation
 
@@ -46,6 +46,12 @@
    aptos -h
    ```
 
+1. Navigate to your home directory:
+
+   ```bash
+   cd ~
+   ```
+
 1. Use the CLI to initialize two devnet users:
 
    ```bash
@@ -56,7 +62,7 @@
    aptos init --profile user2
    ```
 
-1. Store their addresses in shell variables:
+1. Store their addresses in shell variables, and **make sure to use a leading `0x`** (you'll probably have to type it manually before you copy-paste the output from the `aptos init` call):
 
    ```bash
    # Make sure to use a leading 0x
@@ -83,6 +89,12 @@
 
 ## Econia setup
 
+1. Navigate to a directory where you would like to download the Econia repo to:
+
+   ```bash
+   cd my/desired/path
+   ```
+
 1. Clone the Econia repo and navigate to the Econia Move package:
 
    ```bash
@@ -106,7 +118,8 @@
    ...
    ```
 
-1. Publish Econia under `user1`'s account:
+1. Publish Econia under `user1`'s account (note this might take awhile if you haven't already downloaded the Aptos repo, which is a dependency).
+   Use the `y` key to accept the transaction once the simulator has provided gas estimates:
 
    ```bash
    aptos move publish \
