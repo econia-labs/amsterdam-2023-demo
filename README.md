@@ -6,7 +6,7 @@
   - [Resources](#resources)
     - [More documentation](#more-documentation)
     - [Repos](#repos)
-  - [User setup](#user-setup)
+  - [Account setup](#account-setup)
   - [Econia setup](#econia-setup)
   - [Faucet setup](#faucet-setup)
   - [Market account registration](#market-account-registration)
@@ -32,7 +32,7 @@
 - Econia Labs' [`optivanty`](https://github.com/econia-labs/optivanity) tool
 - [Econia reference front end](https://github.com/econia-labs/econia/tree/main/src/typescript/frontend)
 
-## User setup
+## Account setup
 
 1. [Install the Aptos CLI](https://aptos.dev/tools/install-cli/), ideally through `brew`:
 
@@ -52,26 +52,50 @@
    cd ~
    ```
 
-1. Use the CLI to initialize two devnet users:
+1. Use the CLI to initialize a new devnet user named `user1`
 
    ```bash
    aptos init --profile user1
    ```
 
+1. Store `user1`'s address in a shell variable, and **make sure to use a leading `0x`** (you'll probably have to type `0x` manually before you copy-paste the output from the `aptos init` call):
+
+   ```bash
+   # Make sure to insert a leading `0x` (your address should vary)
+   user1=0x445953fa27471d07027d2d8f0a87fc18e8f9d05bb9a7d673a2269ec2616267aa
+   ```
+
+1. Repeat for `user2`, `econia`, and `faucet` profiles:
+
    ```bash
    aptos init --profile user2
    ```
 
-1. Store their addresses in shell variables, and **make sure to use a leading `0x`** (you'll probably have to type it manually before you copy-paste the output from the `aptos init` call):
-
    ```bash
-   # Make sure to use a leading 0x
-   # Your addresses should vary
-   user1=0xe5ef0125f05a2cd2bd4b68820775ac7ad6907968d6ca9b795c9cf8d67891a6d5
-   user2=0xe1b1f5d8d3b3f80375b8a721bdbb59011570dd9b0816b3875d378ee864a0652a
+   aptos init --profile econia
    ```
 
-1. Look up their account resources on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet):
+   ```bash
+   aptos init --profile faucet
+   ```
+
+1. Then verify you have stored each address as a shell variable with a leading `0x`:
+
+   ```bash
+   echo $user1
+   echo $user2
+   echo $econia
+   echo $faucet
+   ```
+
+   ```bash
+   0x445953fa27471d07027d2d8f0a87fc18e8f9d05bb9a7d673a2269ec2616267aa
+   0xd572f6c2c9e7df6be78bdfff15bc72d56339b6226f3857d60eef1b9f99a2275f
+   0xd4ba9f1c60a94f9a8a1349f89267c532195912392938c89f7cd91359aad28cee
+   0xaaa85c7db25681d9f200e8ddd2bd10eeade20e8af69ae717063ea3405ef04fd2
+   ```
+
+1. Look up `user1` and `user2`'s account resources on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet):
 
    ```mermaid
 
@@ -118,35 +142,44 @@
    ...
    ```
 
-1. Publish Econia under `user1`'s account (note this might take awhile if you haven't already downloaded the Aptos repo, which is a dependency).
-   Use the `y` key to accept the transaction once the simulator has provided gas estimates:
+1. Look up the `econia` account's modules section on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet):
 
    ```bash
-   aptos move publish \
-       --named-addresses econia=$user1 \
-       --included-artifacts none \
-       --profile=user1
+   echo $econia
    ```
 
    ```mermaid
 
    flowchart TD
 
-   user1 --> account[Account]
-   user1 --> apt_coinstore[CoinStore]
-   apt_coinstore --> apt[Aptos Coin]
-   user1 ---> Econia
-   Econia --> assets
-   Econia --> avl_queue
-   Econia --> ...
-   Econia --> user
-
+   econia
    ```
 
-1. Store `user1`'s address as the `econia` address:
+1. Publish Econia under the `econia` account (note this might take awhile if you haven't already downloaded the Aptos repo, which is a dependency).
+   Use the `y` key to accept the transaction once the simulator has provided gas estimates:
 
    ```bash
-   econia=$user1
+   aptos move publish \
+       --named-addresses econia=$econia \
+       --included-artifacts none \
+       --profile econia
+   ```
+
+   ```mermaid
+
+   flowchart TD
+
+   econia --> Econia:::new
+   Econia --> assets:::new
+   Econia --> avl_queue:::new
+   Econia --> incentives:::new
+   Econia --> market:::new
+   Econia --> registry:::new
+   Econia --> resource_account:::new
+   Econia --> tablist:::new
+   Econia --> user:::new
+
+   classDef new fill:green
    ```
 
 1. Lower the fee to register a market (this is used to mitigate denial-of-service attacks on mainnet):
@@ -161,7 +194,7 @@
            u64:1 \
            u64:5000 \
            u64:"[[10000,0,7],[8333,1,6],[7692,2,5],[7143,3,4],[6667,4,3],[6250,5,2],[5882,6,1]]" \
-       --profile user1
+       --profile econia
    ```
 
 ## Faucet setup
@@ -172,35 +205,40 @@
    cd ../faucet
    ```
 
-1. Publish the faucet under `user2`'s account:
+1. Look up the `faucet` account's modules section on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet):
 
-   ```
-   aptos move publish \
-       --named-addresses econia=$user1,econia_faucet=$user2 \
-       --profile=user2
+   ```bash
+   echo $faucet
    ```
 
    ```mermaid
 
    flowchart TD
 
-   user2 --> account[Account]
-   user2 --> apt_coinstore[CoinStore]
-   apt_coinstore --> apt[Aptos Coin]
-   user2 ---> EconiaFaucet
-   EconiaFaucet --> faucet
-   EconiaFaucet --> test_usdc
-   EconiaFaucet --> test_eth
-
+   faucet
    ```
 
-1. Store `user2`'s address as the `faucet` address:
+1. Publish the faucet under the `faucet` account:
 
-   ```bash
-   faucet=$user2
+   ```
+   aptos move publish \
+       --named-addresses econia=$econia,econia_faucet=$faucet \
+       --profile faucet
    ```
 
-1. Mint test USDC to `user1`'s account:
+   ```mermaid
+
+   flowchart TD
+
+   faucet_addr[faucet] --> EconiaFaucet:::new
+   EconiaFaucet --> faucet:::new
+   EconiaFaucet --> test_usdc:::new
+   EconiaFaucet --> test_eth:::new
+
+   classDef new fill:green
+   ```
+
+1. Mint test USDC to `user1`'s account, generating a new `CoinStore` with `tUSDC` inside:
 
    ```bash
    aptos move run \
@@ -217,13 +255,10 @@
    user1 --> account[Account]
    user1 --> apt_coinstore[CoinStore]
    apt_coinstore --> apt[Aptos Coin]
-   user1 ---> Econia
-   Econia --> assets
-   Econia --> avl_queue
-   Econia --> ...
-   Econia --> user
-   user1 --> usdc_coinstore[CoinStore]
-   usdc_coinstore --> usdc[Test USDC]
+   user1 --> usdc_coinstore[CoinStore]:::new
+   usdc_coinstore --> usdc[Test USDC]:::new
+
+   classDef new fill:green
    ```
 
 ## Market account registration
@@ -281,15 +316,12 @@
    user1 --> account[Account]
    user1 --> apt_coinstore[CoinStore]
    apt_coinstore --> apt[Aptos Coin]
-   user1 ---> Econia
-   Econia --> assets
-   Econia --> avl_queue
-   Econia --> ...
-   Econia --> user
    user1 --> usdc_coinstore[CoinStore]
    usdc_coinstore --> usdc[Test USDC]
-   user1 --> market_account[Market account]
-   market_account --> usdcma[Test USDC]
+   user1 --> market_account[Market account]:::new
+   market_account --> usdcma[Test USDC]:::new
+
+   classDef new fill:green
    ```
 
 ## Trading
@@ -342,10 +374,8 @@
    user2 --> account[Account]
    user2 --> apt_coinstore[CoinStore]
    apt_coinstore --> apt[Aptos Coin]
-   user2 ---> EconiaFaucet
-   EconiaFaucet --> faucet
-   EconiaFaucet --> test_usdc
-   EconiaFaucet --> test_eth
-   user2 --> tusdc_coinstore[CoinStore]
-   tusdc_coinstore --> tusdc[Test USDC]
+   user2 --> tusdc_coinstore[CoinStore]:::new
+   tusdc_coinstore --> tusdc[Test USDC]:::new
+
+   classDef new fill:green
    ```
