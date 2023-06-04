@@ -7,7 +7,10 @@
     - [More documentation](#more-documentation)
     - [Repos](#repos)
   - [User setup](#user-setup)
+  - [Econia setup](#econia-setup)
   - [Faucet setup](#faucet-setup)
+  - [Market account registration](#market-account-registration)
+  - [Trading](#trading)
 
 ## Resources
 
@@ -31,97 +34,305 @@
 
 ## User setup
 
-1. [Install the Aptos CLI](https://aptos.dev/tools/install-cli/):
+1. [Install the Aptos CLI](https://aptos.dev/tools/install-cli/), ideally through `brew`:
 
-```bash
-brew install aptos
-```
+   ```bash
+   brew install aptos
+   ```
 
-2. Use the CLI to initialize two testnet users:
+1. Verify you are on version `v2.0.0` or higher:
 
-```bash
-aptos init --profile user1
-```
+   ```bash
+   aptos -h
+   ```
 
-```bash
-aptos init --profile user2
-```
+1. Use the CLI to initialize two devnet users:
 
-3. Store their addresses in shell variables:
+   ```bash
+   aptos init --profile user1
+   ```
 
-```bash
-# Make sure to use a leading 0x
-user1=0xabc123...
-user2=0xdef456...
-```
+   ```bash
+   aptos init --profile user2
+   ```
 
-4. Look up their accounts on the [testnet explorer](https://explorer.aptoslabs.com/?network=testnet):
+1. Store their addresses in shell variables:
 
-```mermaid
+   ```bash
+   # Make sure to use a leading 0x
+   # Your addresses should vary
+   user1=0xe5ef0125f05a2cd2bd4b68820775ac7ad6907968d6ca9b795c9cf8d67891a6d5
+   user2=0xe1b1f5d8d3b3f80375b8a721bdbb59011570dd9b0816b3875d378ee864a0652a
+   ```
 
-flowchart TD
+1. Look up their account resources on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet):
 
-user1 --> account1[Account]
-user1 --> apt_coinstore1[CoinStore]
-apt_coinstore1 --> apt1[Aptos Coin]
+   ```mermaid
 
-user2 --> account2[Account]
-user2 --> apt_coinstore2[CoinStore]
-apt_coinstore2 --> apt2[Aptos Coin]
+   flowchart TD
 
-```
+   user1 --> account1[Account]
+   user1 --> apt_coinstore1[CoinStore]
+   apt_coinstore1 --> apt1[Aptos Coin]
+
+   user2 --> account2[Account]
+   user2 --> apt_coinstore2[CoinStore]
+   apt_coinstore2 --> apt2[Aptos Coin]
+
+   ```
+
+## Econia setup
+
+1. Clone the Econia repo and navigate to the Econia Move package:
+
+   ```bash
+   mkdir econia_demo
+   cd econia_demo
+   git clone https://github.com/econia-labs/econia.git
+   cd econia/src/move/econia
+   ```
+
+1. Update the `Move.toml` manifest to have a generic `econia` named address and an Aptos devnet dependency:
+
+   ```toml
+   [addresses]
+   econia = "_"
+
+   ...
+
+   [dependencies.AptosFramework]
+   git = "https://github.com/aptos-labs/aptos-core.git"
+   rev = "devnet"
+   ...
+   ```
+
+1. Publish Econia under `user1`'s account:
+
+   ```bash
+   aptos move publish \
+       --named-addresses econia=$user1 \
+       --included-artifacts none \
+       --profile=user1
+   ```
+
+   ```mermaid
+
+   flowchart TD
+
+   user1 --> account[Account]
+   user1 --> apt_coinstore[CoinStore]
+   apt_coinstore --> apt[Aptos Coin]
+   user1 ---> Econia
+   Econia --> assets
+   Econia --> avl_queue
+   Econia --> ...
+   Econia --> user
+
+   ```
+
+1. Store `user1`'s address as the `econia` address:
+
+   ```bash
+   econia=$user1
+   ```
+
+1. Lower the fee to register a market (this is used to mitigate denial-of-service attacks on mainnet):
+
+   ```bash
+   aptos move run \
+       --function-id $econia::incentives::update_incentives \
+       --type-args 0x1::aptos_coin::AptosCoin \
+       --args \
+           u64:1 \
+           u64:1 \
+           u64:1 \
+           u64:5000 \
+           u64:"[[10000,0,7],[8333,1,6],[7692,2,5],[7143,3,4],[6667,4,3],[6250,5,2],[5882,6,1]]" \
+       --profile user1
+   ```
 
 ## Faucet setup
 
-1. Clone the Econia repo and move to the Econia faucet directory:
+1. Navigate to the faucet package:
 
-```bash
-mkdir econia_demo
-cd econia_demo
-git clone https://github.com/econia-labs/econia.git
-cd econia/src/move/faucet
-```
+   ```bash
+   cd ../faucet
+   ```
 
-2. Publish the faucet under user1's account:
+1. Publish the faucet under `user2`'s account:
 
-```
-aptos move publish \
-    --named-addresses econia_faucet=$user1 \
-    --profile=user1
-```
+   ```
+   aptos move publish \
+       --named-addresses econia=$user1,econia_faucet=$user2 \
+       --profile=user2
+   ```
 
-```mermaid
+   ```mermaid
 
-flowchart TD
+   flowchart TD
 
-user1 --> account1[Account]
-user1 --> apt_coinstore1[CoinStore]
-apt_coinstore1 --> apt1[Aptos Coin]
-user1 --> EconiaFaucet
-EconiaFaucet --> faucet
-EconiaFaucet --> test_usdc
-EconiaFaucet --> test_eth
+   user2 --> account[Account]
+   user2 --> apt_coinstore[CoinStore]
+   apt_coinstore --> apt[Aptos Coin]
+   user2 ---> EconiaFaucet
+   EconiaFaucet --> faucet
+   EconiaFaucet --> test_usdc
+   EconiaFaucet --> test_eth
 
-```
+   ```
 
-3. Mint test USDC to user2's account:
+1. Store `user2`'s address as the `faucet` address:
 
-```bash
-aptos move run \
-    --function-id $user1::faucet::mint \
-    --args u64:12345678 \
-    --type-args $user1::test_usdc::TestUSDC \
-    --profile user2
-```
+   ```bash
+   faucet=$user2
+   ```
 
-```mermaid
+1. Mint test USDC to `user1`'s account:
 
-flowchart TD
+   ```bash
+   aptos move run \
+       --function-id $faucet::faucet::mint \
+       --args u64:1234567890 \
+       --type-args $faucet::test_usdc::TestUSDC \
+       --profile user1
+   ```
 
-user2 --> account[Account]
-user2 --> apt_coinstore[CoinStore]
-apt_coinstore --> apt[Aptos Coin]
-user2 --> usdc_coinstore2[CoinStore]
-usdc_coinstore2 --> usdc2[Test USDC]
+   ```mermaid
 
-```
+   flowchart TD
+
+   user1 --> account[Account]
+   user1 --> apt_coinstore[CoinStore]
+   apt_coinstore --> apt[Aptos Coin]
+   user1 ---> Econia
+   Econia --> assets
+   Econia --> avl_queue
+   Econia --> ...
+   Econia --> user
+   user1 --> usdc_coinstore[CoinStore]
+   usdc_coinstore --> usdc[Test USDC]
+   ```
+
+## Market account registration
+
+1. Have `user2` register an `APT`/`tUSDC` market (lot size 0.01 `APT`, tick size 0.001 `USDC`, minimum size 0.05 `APT`):
+
+   ```bash
+   aptos move run \
+       --function-id \
+           $econia::market::register_market_base_coin_from_coinstore \
+       --type-args \
+           0x1::aptos_coin::AptosCoin \
+           $faucet::test_usdc::TestUSDC \
+           0x1::aptos_coin::AptosCoin \
+       --args \
+           u64:1000000 \
+           u64:1000 \
+           u64:5 \
+       --profile user2
+   ```
+
+1. Have `user1` register a market account:
+
+   ```bash
+   aptos move run \
+       --function-id \
+           $econia::user::register_market_account \
+       --type-args \
+           0x1::aptos_coin::AptosCoin \
+           $faucet::test_usdc::TestUSDC \
+       --args \
+           u64:1 \
+           u64:0 \
+       --profile user1
+   ```
+
+1. Deposit `tUSDC` to `user1`'s market account:
+
+   ```bash
+   aptos move run \
+       --function-id \
+           $econia::user::deposit_from_coinstore \
+       --type-args $faucet::test_usdc::TestUSDC \
+       --args \
+           u64:1 \
+           u64:0 \
+           u64:1234567890 \
+       --profile user1
+   ```
+
+   ```mermaid
+
+   flowchart TD
+
+   user1 --> account[Account]
+   user1 --> apt_coinstore[CoinStore]
+   apt_coinstore --> apt[Aptos Coin]
+   user1 ---> Econia
+   Econia --> assets
+   Econia --> avl_queue
+   Econia --> ...
+   Econia --> user
+   user1 --> usdc_coinstore[CoinStore]
+   usdc_coinstore --> usdc[Test USDC]
+   user1 --> market_account[Market account]
+   market_account --> usdcma[Test USDC]
+   ```
+
+## Trading
+
+1. Have `user1` place a bid for 0.5 `APT` at a price of 10.50 `tUSDC` per `APT`:
+
+   ```bash
+   aptos move run \
+       --function-id \
+           $econia::market::place_limit_order_user_entry \
+       --type-args \
+           0x1::aptos_coin::AptosCoin \
+           $faucet::test_usdc::TestUSDC \
+       --args \
+           u64:1 \
+           address:"0x0" \
+           bool:false \
+           u64:5 \
+           u64:105 \
+           u8:0 \
+           u8:0 \
+       --profile user1
+   ```
+
+1. Have `user2` submit a swap sell of 0.5 `APT`, filling directly into a new `tUSDC` coinstore:
+
+   ```bash
+   aptos move run \
+       --function-id \
+           $econia::market::swap_between_coinstores_entry \
+       --type-args \
+           0x1::aptos_coin::AptosCoin \
+           $faucet::test_usdc::TestUSDC \
+       --args \
+           u64:1 \
+           address:"0x0" \
+           bool:true \
+           u64:0 \
+           u64:50000000 \
+           u64:0 \
+           u64:124567890 \
+           u64:0 \
+       --profile user2
+   ```
+
+   ```mermaid
+
+   flowchart TD
+
+   user2 --> account[Account]
+   user2 --> apt_coinstore[CoinStore]
+   apt_coinstore --> apt[Aptos Coin]
+   user2 ---> EconiaFaucet
+   EconiaFaucet --> faucet
+   EconiaFaucet --> test_usdc
+   EconiaFaucet --> test_eth
+   user2 --> tusdc_coinstore[CoinStore]
+   tusdc_coinstore --> tusdc[Test USDC]
+   ```
