@@ -78,7 +78,7 @@
    user1=0x<copy-paste-your-address-here>
    ```
 
-1. Repeat for `user2`, `econia`, and `faucet` profiles:
+1. Repeat steps 4 through 7 for `user2`, `econia`, and `faucet` profiles:
 
    ```bash
    aptos init --profile user2
