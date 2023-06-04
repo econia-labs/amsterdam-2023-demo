@@ -110,7 +110,7 @@
    0xaaa85c7db25681d9f200e8ddd2bd10eeade20e8af69ae717063ea3405ef04fd2
    ```
 
-1. Look up `user1` and `user2`'s account resources on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet):
+1. Look up `user1` and `user2`'s account resources on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet) using separate browser tabs, since you will want to look at each one later:
 
    ```mermaid
 
