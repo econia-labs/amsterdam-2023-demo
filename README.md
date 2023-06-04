@@ -229,7 +229,7 @@
    cd ../faucet
    ```
 
-1. Look up the `faucet` account's modules section on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet):
+1. Look up the `faucet` account's modules section using a new browser tab on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet):
 
    ```bash
    echo $faucet
