@@ -143,6 +143,12 @@
    cd econia/src/move/econia
    ```
 
+1. Open the `Move.toml` manifest either with `vim` or with a simple text editor:
+
+   ```bash
+   open -e Move.toml
+   ```
+
 1. Update the `Move.toml` manifest to have a generic `econia` named address and an Aptos devnet dependency:
 
    ```toml
