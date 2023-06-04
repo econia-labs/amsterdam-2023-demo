@@ -24,7 +24,6 @@
 - [Econia Documentation](https://econia.dev/)
 - [Econia Move DocGen files](https://github.com/econia-labs/econia/tree/main/src/move/econia/doc)
 - [Econia API docs](https://docs.econia.exchange)
-- [Econia Move scraps](https://github.com/econia-labs/move-scraps)
 - [Aptos Documentation](https://aptos.dev/)
 
 ### Repos
@@ -33,6 +32,7 @@
 - [Econia indexer](https://github.com/econia-labs/aptos-core/tree/econia) ([`aptos-core`](https://github.com/aptos-labs/aptos-core) fork)
 - Econia Labs' [`optivanty`](https://github.com/econia-labs/optivanity) tool
 - [Econia reference front end](https://github.com/econia-labs/econia/tree/main/src/typescript/frontend)
+- [Econia Move scraps](https://github.com/econia-labs/move-scraps)
 
 ## Account setup
 
@@ -58,6 +58,18 @@
 
    ```bash
    aptos init --profile user1
+   ```
+
+1. Type `devnet` when prompted for a network:
+
+   ```bash
+   devnet
+   ```
+
+1. Press `return` when prompted for a private key:
+
+   ```
+   <return>
    ```
 
 1. Store `user1`'s address in a shell variable, and **make sure to use a leading `0x`** (you'll probably have to type `0x` manually before you copy-paste the output from the `aptos init` call):
