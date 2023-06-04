@@ -163,11 +163,13 @@
    ...
    ```
 
-1. Look up the `econia` account's modules section on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet):
+1. Print out the `econia` account address:
 
    ```bash
    echo $econia
    ```
+
+1. Look up the `econia` account's modules section on the [devnet explorer](https://explorer.aptoslabs.com/?network=devnet):
 
    ```mermaid
 
