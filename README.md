@@ -135,33 +135,15 @@
    cd ~/Desktop
    ```
 
-1. Clone the Econia repo and navigate to the Econia Move package:
+1. Clone the Econia repo, checkout the [`amsterdam-2023-demo` release](https://github.com/econia-labs/econia/releases/tag/amsterdam-2023-demo), and navigate to the Econia Move package (note you can download the release from the link manually if you don't have `git`):
 
    ```bash
    mkdir econia_demo
    cd econia_demo
    git clone https://github.com/econia-labs/econia.git
-   cd econia/src/move/econia
-   ```
-
-1. Open the `Move.toml` manifest either with `vim` or with a simple text editor:
-
-   ```bash
-   open -e Move.toml
-   ```
-
-1. Update the `Move.toml` manifest to have a generic `econia` named address and an Aptos devnet dependency:
-
-   ```toml
-   [addresses]
-   econia = "_"
-
-   ...
-
-   [dependencies.AptosFramework]
-   git = "https://github.com/aptos-labs/aptos-core.git"
-   rev = "devnet"
-   ...
+   cd econia
+   git checkout amsterdam-2023-demo
+   cd src/move/econia
    ```
 
 1. Print out the `econia` account address:
