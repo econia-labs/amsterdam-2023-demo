@@ -38,10 +38,10 @@
 
 ## Pre-cleanup
 
-If you've used the `aptos` CLI before, you'll probably want to wipe your config file before trying out this workshop (note this will delete your profiles):
+If you've used the `aptos` CLI before to initialize user profiles, you'll probably want to save a copy of your config file before trying out this workshop:
 
 ```bash
-rm ~/.aptos/config.yaml
+mv ~/.aptos/config.yaml ~/Desktop/old_config.yaml
 ```
 
 ## Account setup
