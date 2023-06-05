@@ -6,6 +6,7 @@
   - [Resources](#resources)
     - [More documentation](#more-documentation)
     - [Repos](#repos)
+  - [Pre-cleanup](#pre-cleanup)
   - [Account setup](#account-setup)
   - [Econia setup](#econia-setup)
   - [Faucet setup](#faucet-setup)
@@ -34,6 +35,14 @@
 - Econia Labs' [`optivanty`](https://github.com/econia-labs/optivanity) tool
 - [Econia reference front end](https://github.com/econia-labs/econia/tree/main/src/typescript/frontend)
 - [Econia Move scraps](https://github.com/econia-labs/move-scraps)
+
+## Pre-cleanup
+
+If you've used the `aptos` CLI before, you'll probably want to wipe your config file before trying out this workshop (note this will delete your profiles):
+
+```bash
+rm ~/.aptos/config.yaml
+```
 
 ## Account setup
 
